@@ -1,4 +1,4 @@
-//const __sp = require("path");
+
 let _ourpath = document.currentScript.src.split('/')
 let __ourname = _ourpath.slice(-2,-1)
 
