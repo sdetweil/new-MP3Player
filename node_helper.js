@@ -12,25 +12,27 @@ const path = require('path')
 const fs = require('fs');
 
 var music_files_list = [];
-
+var ourMP3 = null
 module.exports = NodeHelper.create({
+	start: function(){
+		ourMP3= this
+	},
 	socketNotificationReceived: function(notification, payload) {
-		var self = this;
 		switch(notification) {
 			case "INITIATEDEVICES":
 				music_files_list = [];
-				var self = this;
-				self.searchMP3(payload.musicPath);
+
+				ourMP3.searchMP3(payload.musicPath);
 				if(music_files_list.length){
-					console.log("[MMM-MP3Player] Found ", music_files_list.length, "track(s)");
-					self.sendSocketNotification("Music_Files",music_files_list);
+					console.log("["+ourMP3.name+" Found ", music_files_list.length, "track(s)");
+					ourMP3.sendSocketNotification("Music_Files",music_files_list);
 				}
 				else {
-					console.log("[MMM-MP3Player] Music may not be found");
+					console.log("["+ourMP3.name+" Music may not be found");
 				}
 				break;
 			case "LOADFILE":
-				//console.log('[MMM-MP3Player] trying to play next track');
+				//console.log('["+ourMP3.name+" trying to play next track');
 				if (fs.existsSync(payload)){
 					fs.readFile(payload, function(err, data) {
 						extension = path.basename(payload).split('.').pop(); //extension = path.extname(payload); //returns ext with dot
@@ -58,23 +60,22 @@ module.exports = NodeHelper.create({
 								cover = "music.png";
 							}
 						}
-						self.sendSocketNotification("Music_File",[data,[tags.artist,tags.title], extension, cover]);
+						ourMP3.sendSocketNotification("Music_File",[data,[tags.artist,tags.title], extension, cover]);
 					});
 				}
 				else {
-					self.sendSocketNotification("Error","File can not be opened");
+					ourMP3.sendSocketNotification("Error","File can not be opened");
 				}
 				break;
 		}
 	},
 	searchMP3(startPath){ // thanks to Lucio M. Tato at https://stackoverflow.com/questions/25460574/find-files-by-extension-html-under-a-folder-in-nodejs
-		var self = this;
 		var filter_mp3 = RegExp('.mp3'); // var filter = /.mp3/;
 		var filter_flac = RegExp('.flac');
 		//var filter_ogg = RegExp('.ogg');
 		var filter_wav = RegExp('.wav');
 		if (!fs.existsSync(startPath)){
-			console.log("[MMM-MP3Player] no dir ",startPath);
+			console.log("["+ourMP3.name+" no dir ",startPath);
 			return;
 		}
 		var files=fs.readdirSync(startPath);
@@ -82,7 +83,7 @@ module.exports = NodeHelper.create({
 			var filename=path.join(startPath,files[i]);
 			var stat = fs.lstatSync(filename);
 			if (stat.isDirectory()){
-				self.searchMP3(filename); //recurse
+				ourMP3.searchMP3(filename); //recurse
 			}else if ( (filter_mp3.test(filename)) || (filter_flac.test(filename)) /*|| (filter_ogg.test(filename))*/ || (filter_wav.test(filename)) ){
 				music_files_list.push(filename.replace(/\/\/+/g, '/')); // to avoid double slashes (https://stackoverflow.com/questions/23584117/replace-multiple-slashes-in-text-with-single-slash-with-javascript/23584219)
 			}

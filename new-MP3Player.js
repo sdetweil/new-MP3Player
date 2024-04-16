@@ -1,23 +1,33 @@
+//const __sp = require("path");
+let _ourpath = document.currentScript.src.split('/')
+let __ourname = _ourpath.slice(-2,-1)
+
+
+
 var arrPlayed = [];
 var audioElement = null; // Define it here globally
 var ourMP3 = null;
-Module.register("MMM-MP3Player",{
+const default_path="see code in start"
+Module.register(__ourname,{
 	defaults: {
-		musicPath: "modules/MMM-MP3Player/music/", 
+		musicPath: "see code in start",
 		autoPlay: true,
 		random: false,
 		loopList: true,
 	},
+
 	getStyles: function() {
-		return ["MMM-MP3Player.css"];
+		return [this.data.path+this.name+".css"];
 	},
 start: function(){
-	ourMP3 = this
-	//ourMP3.updateDom()
+	// save our this pointer once
+	ourMP3 = this	
+	if(ourMP3.config.musicPath=== default_path )
+		ourMP3.config.musicPath=ourMP3.data.path+"/music/"
+
 	},
 
-getDom: function() {
-    //var self = this;
+getDom: function() {    
     var wrapper = document.createElement("div");
     wrapper.id = ourMP3.identifier + "_wrapper";
 
@@ -29,7 +39,7 @@ getDom: function() {
 
     ourMP3.artist = document.createElement("span");
     ourMP3.artist.className = "artist";
-    ourMP3.artist.innerHTML = "MMM-MP3Player";
+    ourMP3.artist.innerHTML = ourMP3.name; // was "MMM-MP3Player";
 
     ourMP3.song = document.createElement("span");
     ourMP3.song.className = "name";
@@ -92,18 +102,17 @@ getDom: function() {
 
     return wrapper;
 },
-	socketNotificationReceived: function(notification, payload){
-		//var self = this;
+	socketNotificationReceived: function(notification, payload){		
 		switch(notification){
 			case "Error": // Universal error handler
 				ourMP3.musicFound = false;
-				console.log("[MMM-MP3Player] Error! ", payload);
+				console.log("["+self.name+" Error! ", payload);
 				break;
 			case "Music_Files": // this populates the songs list (array)
 				ourMP3.songs = payload;
 				ourMP3.current = 0;
 				ourMP3.musicFound = true;
-				console.log("[MMM-MP3Player] Music Found");
+				console.log("["+self.name+" Music Found");
 				arrPlayed = Array(ourMP3.songs.length).fill(false);
 				if (ourMP3.config.autoPlay){
 					if (ourMP3.config.random){
@@ -180,7 +189,7 @@ getDom: function() {
 							if (!ourMP3.config.loopList) {
 								ourMP3.artist.innerHTML = "Playlist ended";
 								ourMP3.song.innerHTML = "";
-								console.log("[MMM-MP3Player] Playlist ended");
+								console.log("["+self.name+" Playlist ended");
 								return;
 							}
 							arrPlayed.fill(false);
@@ -196,7 +205,7 @@ getDom: function() {
 							if (!ourMP3.config.loopList){
 								ourMP3.artist.innerHTML = "Playlist ended";
 								ourMP3.song.innerHTML = "";
-								console.log("[MMM-MP3Player] Playlist ended");
+								console.log("["+self.name+" Playlist ended");
 								return;
 							}
 							ourMP3.current = -1;
@@ -205,16 +214,13 @@ getDom: function() {
 					}
 					ourMP3.sendSocketNotification("LOADFILE", ourMP3.songs[ourMP3.current]);
 				};
-				console.log("[MMM-MP3Player] Music Played");
+				console.log("["+self.name+" Music Played");
 				break;
 		}
 	},
 
 notificationReceived: function(notification, payload, sender) {
     console.log("Notification received:", notification);
-        //if(notification === "ALL_MODULES_STARTED")
-        //		ourMP3.sendSocketNotification("INITIATEDEVICES", ourMP3.config);
-		//var self = this;
 		if (ourMP3.musicFound){
 			switch(notification){
 				case "PLAY_MUSIC":
