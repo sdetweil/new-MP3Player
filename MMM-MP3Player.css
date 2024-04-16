@@ -1,0 +1,166 @@
+/*
+
+player css is amdended version of Shayan’s player @ https://codepen.io/shayanea/pen/yvvjya
+Version 1.2.0 - 2020.09.14
+*/
+@import url(“https://fonts.googleapis.com/css?family=Fira+Sans”);
+.player {
+font-family: “Fira Sans”, Helvetica, Arial, sans-serif;
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+position: relative;
+background-color: #fff;
+border-radius: 15px;
+width: 300px;
+height: 80px;
+z-index: 5;
+-webkit-box-shadow: 0px 0px 117px -6px rgba(255,255,255,1);
+-moz-box-shadow: 0px 0px 117px -6px rgba(255,255,255,1);
+box-shadow: 0px 0px 117px -6px rgba(255,255,255,1);
+display: flex;
+/justify-content: flex-end; /
+}
+.player .info {
+padding: 15px 0px 0px 90px;
+width:65%;
+}
+.player .info .artist,
+.player .info .name {
+display: block;
+line-height: 1.0em;
+}
+.player .info .artist {
+color: #222;
+font-size: 16px;
+margin-bottom: 4px;
+}
+.player .info .name {
+color: #808080; /#999/
+font-size: 16px; /13px/
+margin-bottom: 8px;
+}
+.player .info .progress-bar {
+background-color: #ddd;
+height: 3px;
+width: 100%;
+position: relative;
+}
+
+.controls {
+display: flex;
+justify-content: space-around; /* Distributes space between buttons */
+padding: 10px;
+}
+
+.controls button {
+padding: 5px 10px;
+font-size: 14px;
+color: white;
+background-color: #666; /* Dark grey button background */
+border: none;
+border-radius: 5px;
+cursor: pointer;
+transition: background-color 0.3s;
+}
+
+.controls button:hover {
+background-color: #777; /* Lighten button on hover */
+}
+
+.controls button:active {
+background-color: #555; /* Darken button on active/click */
+}
+
+.player .info .progress-bar .bar {
+position: absolute;
+left: 0;
+top: 0;
+bottom: 0;
+background-color: #666;
+transition: all 0.2s ease;
+}
+.player .album-art-found {
+position: absolute;
+left: -10px;
+height: 80px;
+width: 80px;
+/* background-color:white; */
+box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.2);
+transform: scale(1.2);
+transition: all 0.5s ease;
+}
+.player .album-art-found::before {
+content: “”;
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background-position: center;
+background-repeat: no-repeat;
+background-size: 80px;
+background-image: var(–backgroundImage);
+}
+.player .album-art {
+position: absolute;
+left: -10px;
+height: 80px;
+width: 80px;
+border-radius: 50%;
+background-color:white;
+box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.2);
+transform: scale(1.2);
+transition: all 0.5s ease;
+}
+.player .album-art::before {
+content: “”;
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+border-radius: 50%;
+background-position: center;
+background-repeat: no-repeat;
+background-size: 50px;
+background-image: url(“music.png”);
+}
+.player .album-art.active {
+box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.4);
+transform: scale(1.2);
+transition: all 1s ease;
+background: linear-gradient(270deg, #2f987d, #4190bd, #d29b2d, #4bd22d, #d2692d, #9e2dd2, #d22daf, #3f2dd2);
+background-size: 1600% 1600%;
+-webkit-animation: ColorChanger 20s ease infinite;
+-moz-animation: ColorChanger 20s ease infinite;
+animation: ColorChanger 20s ease infinite;
+}
+.player .album-art.active::before {
+animation: rotation 3s infinite linear;
+-webkit-animation: rotation 3s infinite linear;
+animation-fill-mode: forwards;
+}
+
+@-webkit-keyframes ColorChanger {
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
+}
+@-moz-keyframes ColorChanger {
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
+}
+@keyframes ColorChanger {
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
+}
+@keyframes rotation {
+0% {
+transform: rotate(0deg);
+}
+100% {
+transform: rotate(360deg);
+}
+}
