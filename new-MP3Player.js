@@ -10,7 +10,7 @@ var ourMP3 = null;
 const default_path="see code in start"
 Module.register(__ourname,{
 	defaults: {
-		musicPath: "see code in start",
+		musicPath: default_path,
 		autoPlay: true,
 		random: false,
 		loopList: true,
